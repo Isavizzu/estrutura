@@ -5,7 +5,7 @@ public class StaticList<T> {
 
     public StaticList(int size){
         this.size = size;
-        indice = 0;
+        indice = -1;
         this.data = (T[]) new Object[size];
     }
 
@@ -22,7 +22,17 @@ public class StaticList<T> {
         if (isFull()){
             throw new IllegalStateException("A lista está cheia!");
         }
-        
+        if (this.data[indice] == null) {
+            throw new IllegalStateException("Tem ao menos um índice antes do "+ pos + " livre!");
+        }
+        for (int i=indice;i>=0;i--){
+            if (pos == indice){
+                this.data[indice] = data;
+                break;
+            }
+            this.data[indice+1] = this.data[indice];
+        }
+        indice++;
     }
 
 
@@ -61,14 +71,16 @@ public class StaticList<T> {
     }
 
 
-    public T remove(){
+    public T remove(int pos){
         if (isEmpty()){
             throw new IllegalStateException("A lista já está vazia!");
         }
-        T itemRemovido = this.data[base];
-        this.data[base] = null;
-        base = moveTop(base);
-        return itemRemovido;
+        T valorRemovido = this.data[pos];
+        for (int i=pos;i<=indice;i++){
+            this.data[indice] = this.data[indice++];
+        }
+        indice--;
+        return valorRemovido;
     }
 
 
